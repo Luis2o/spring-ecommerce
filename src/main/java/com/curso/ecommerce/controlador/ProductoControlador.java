@@ -7,6 +7,7 @@ import com.curso.ecommerce.servicios.ProductoService;
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +21,8 @@ public class ProductoControlador {
     @Autowired
     private ProductoService productoService;
     @GetMapping("")
-    public String show(){
+    public String show(Model modelo){
+        modelo.addAttribute("prod", productoService.listaProductos());
         return "Productos/show";
     }
 
@@ -36,4 +38,6 @@ public class ProductoControlador {
         productoService.guardar(producto);
         return "redirect:/productos";//redicreccionamos al metodo show somo recibe vaci no se le pone un nombre
     }
+
+
 }
