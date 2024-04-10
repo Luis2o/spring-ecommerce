@@ -21,7 +21,7 @@
 <body>
 
 <!-- Navigation -->
-<div th:include="administrador/template_admin.html::header"></div>
+<div th:include="/administrador/template_admin.html::header"></div>
 
 <!-- Page Content -->
 <div class="container">
@@ -56,7 +56,7 @@
             <td th:text="${p.descripcion}"></td>
             <td th:text="${p.cantidad}"></td>
             <td th:text="${p.precio}"></td>
-            <td><a class="btn btn-warning" href="">Editar</a></td>
+            <td><a class="btn btn-warning" th:href="@{productos/edit/{id} (id=${p.idProducto})}">Editar</a></td>
             <td><a class="btn btn-danger" href="">Eliminar</a></td>
         </tr>
         </tbody>
@@ -66,7 +66,7 @@
 <!-- /.container -->
 
 <!-- Footer -->
-<div th:include="administrador/template_admin.html::footer"></div>
+<div th:include="/administrador/template_admin.html::footer"></div>
 
 <!-- Bootstrap core JavaScript -->
 <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
