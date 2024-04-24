@@ -12,7 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Optional;
 
 @Controller
@@ -39,8 +38,8 @@ public class ProductoControlador {
     }
 
     @PostMapping("/guardar")      //create.html esa variable img es del campo guardar img
-    public String guardar(Producto producto, @RequestParam("img") MultipartFile file) {
-        LOGGER.info("Este es el objeto producto {}", producto);//solo sirve con ToStrinf en Producto
+    public String guardar(Producto producto, @RequestParam("img") MultipartFile file, @RequestParam("nom") String n) {
+        LOGGER.info("Este es el objeto producto {}", producto);
         Usuario usuario = new Usuario(1, "", "", "", "", "", "", "");
         producto.setUsuario(usuario);
 
@@ -48,21 +47,15 @@ public class ProductoControlador {
         if (producto.getIdProducto() == null) {//cuando se crea un producto
             try {
                 String nombreImagen = upload.saveImg(file);
+                System.out.println("vemos si trae la nueva img=" + nombreImagen);
                 producto.setImagen(nombreImagen);
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println("Error en guardar=" + e.getMessage());
             }
 
-        } else {
-            if (file.isEmpty()) {//editamos el producto pero no cambiamos la img
-                Producto p = new Producto();
-                p = productoService.buscarporID(producto.getIdProducto()).get();
-                producto.setImagen(p.getImagen());
-            }else{
-                String nombreImagen = upload.saveImg(file);
-                producto.setImagen(nombreImagen);
-            }
         }
+        System.out.println("prueba si trae el nombre en n" + n);
+        producto.setNombre(n);
         productoService.guardar(producto);
         return "redirect:/productos";//redicreccionamos al metodo show somo recibe vaci no se le pone un nombre
     }
@@ -79,14 +72,37 @@ public class ProductoControlador {
     }
 
     @PostMapping("/actualizar")
-    public String actualizar(Producto producto) {
+    public String actualizar(Producto producto, @RequestParam("img") MultipartFile file) {
+        Usuario usuario = new Usuario(1, "", "", "", "", "", "", "");
+        producto.setUsuario(usuario);
         LOGGER.info("que datos lleva el actualizar {}", producto);
+        if (file.isEmpty()) {//editamos el producto pero no cambiamos la img
+            Producto p = new Producto();
+            p = productoService.buscarporID(producto.getIdProducto()).get();
+            producto.setImagen(p.getImagen());
+        } else {
+            //cuando se edita la img
+            Producto p = new Producto();
+            p = productoService.buscarporID(producto.getIdProducto()).get();
+            //eliminar cuando no sea la img por defualt
+            if (!p.getImagen().equals("defaul.png")) {
+                upload.eliminarImg(p.getImagen());
+            }
+            String nombreImagen = upload.saveImg(file);
+            producto.setImagen(nombreImagen);
+        }
         productoService.actualiza(producto);
         return "redirect:/productos";
     }
 
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Integer id) {
+        Producto p = new Producto();
+        p = productoService.buscarporID(id).get();
+        //eliminar cuando no sea la img por defualt
+        if (!p.getImagen().equals("defaul.png")) {
+            upload.eliminarImg(p.getImagen());
+        }
         LOGGER.info("Dato a eliminar {}", id);
         productoService.eliminar(id);
         return "redirect:/productos";

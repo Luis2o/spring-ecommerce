@@ -12,17 +12,17 @@ import java.nio.file.Paths;
 @Service
 public class UploadFileService {
 
-    private String folder = "imagen";//ubicacion de las img
+    private String folder = "img//";//ubicacion de las img
 
     public String saveImg(MultipartFile file) {// guardar imagen
-        if (file.isEmpty()) {//validar si trae la img debido a que sera un null
+        if (!file.isEmpty()) {//validar si trae la img debido a que sera un null
             try {
                 byte[] bytes = file.getBytes();
                 Path path = Paths.get(folder + file.getOriginalFilename());
                 Files.write(path, bytes);
                 return file.getOriginalFilename();
             } catch (IOException e) {
-
+                     e.printStackTrace();
             }
         }//en caso no se quiere agregar una img desde el frame se carga una img por defaul
         return "default.jpg";

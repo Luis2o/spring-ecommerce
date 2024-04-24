@@ -1,25 +1,19 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
     <title>Spring eCommerce</title>
-
     <!-- Bootstrap core CSS -->
-    <link th:href="@{vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
-
+    <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
     <!-- Custom styles for this template -->
-    <link th:href="@{css/heroic-features.css}" rel="stylesheet">
-
+    <link th:href="@{/css/heroic-features.css}" rel="stylesheet">
 </head>
-
 <body>
-
-<!-- navigation -->
-<div th:include="administrador/template_admin.html::header"></div>
+<!-- Navigation -->
+<div th:include="/usuario/templateUsuarioAdmin.html::header"></div>
 
 <!-- Page Content -->
 <div class="container">
@@ -33,14 +27,15 @@
     <!-- Page Features -->
     <div class="row text-center">
 
-        <div class="col-lg-3 col-md-6 mb-4" th:each="lista: ${listaProductos}">
+        <div class="col-lg-3 col-md-6 mb-4" th:each="l: ${listaProducto}">
             <div class="card h-100">
-                <img class="card-imagen-top" th:src="@{/buscarimg/{aux} (aux=${lista.imagen})}" alt="">
+                <img class="card-img-top" th:src="@{/buscarimg/{aux} (aux=${l.imagen})}" alt="">
                 <div class="card-body">
-                    <p class="card-text" th:text="${lista.nombre}"></p>
+                    <p class="card-text" th:text="${l.nombre}"></p>
                 </div>
                 <div class="card-footer">
-                    <a href="productohome.html" class="btn btn-success">Ver producto</a>
+                    <a th:href="@{productoHome/{id}  (id=${l.idProducto})}" class="btn btn-success">Ver
+                        producto</a>
                 </div>
             </div>
         </div>
@@ -52,12 +47,11 @@
 <!-- /.container -->
 
 <!-- Footer -->
-<div th:include="administrador/template_admin.html::footer"></div>
+<div th:include="usuario/templateUsuarioAdmin.html::footer"></div>
 
 <!-- Bootstrap core JavaScript -->
-<script th:src="@{vendor/jquery/jquery.min.js}"></script>
-<script th:src="@{vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
-
+<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
 </body>
 
 </html>
