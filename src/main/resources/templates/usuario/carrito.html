@@ -47,7 +47,7 @@
                             <td th:text="${c.precion}">Precio</td>
                             <td th:text="${c.cantidad}">Cantidad</td>
                             <td th:text="${c.total}">Total</td>
-                            <td><a href="#" class="btn btn-danger">Quitar</a></td>
+                            <td><a th:href="@{/quitar/{id} (id=${c.producto.idProducto})}" class="btn btn-danger" >Quitar</a></td>
                         </tr>
                         </tbody>
                     </table>
@@ -58,7 +58,7 @@
 
                     <ul class="list-group">
                         <li class="list-group-item"><h5 th:text="${mostrarTotal.total}"></h5></li>
-                        <a href="resumenorden.html" class="btn btn-dark">Ver Orden</a>
+                        <a th:href="@{/resumenOrden}" class="btn btn-dark">Ver Orden</a>
                     </ul>
                 </div>
             </div>
