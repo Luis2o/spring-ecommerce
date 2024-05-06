@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/")//apunta a la raiz
@@ -126,13 +127,13 @@ public class HomeControlador {
         modelo.addAttribute("CarritoResumen", detalles);
         //con esto puedo mostrar el total de la compra
         modelo.addAttribute("mostrarResumenTotal", orden);//solo mando a llamar mostrarTotal
-        modelo.addAttribute("enviarUsuario",usuario);//enviamos los datos de usuario
+        modelo.addAttribute("enviarUsuario", usuario);//enviamos los datos de usuario
         return "usuario/resumenorden";
     }
 
     //guarda el detalle de la  orden
     @GetMapping("/guardarOrden")
-    public String guardarOrden(){
+    public String guardarOrden() {
         Date fechaCreacion = new Date();
         orden.setFechaCreacion(fechaCreacion);
         orden.setNumero(ordenServicio.numeroOrden());
@@ -140,7 +141,7 @@ public class HomeControlador {
         orden.setUsuario(usuario);
         ordenServicio.guardar(orden);
 
-        for(DetalleOrden dt : detalles){
+        for (DetalleOrden dt : detalles) {
             dt.setOrden(orden);
             iDetalleOrdenServicio.guardar(dt);
         }
@@ -149,5 +150,38 @@ public class HomeControlador {
         orden = new Orden();
         detalles.clear();
         return "redirect:/";// redirigimos al la raiz
+    }
+
+    //metodo de busqueda
+    @GetMapping("/buscar")
+    public String buscar(@RequestParam String nombre, Model modelo) {
+        log.info("Nombre del producto {}", nombre);
+        /*primero obtenemos un listado de prodcutos y por medio de un filtro
+        * obtenemos solo lo que conincidan con el parametro nombre
+        * pero como lo que obtenermos es un string lo pasamos a lista por medio del
+        * collect(Collectors.toList())*/
+        List<Producto> listaProductos = productoService.listaProductos().stream().filter(
+                p -> p.getNombre().contains(nombre)).collect(Collectors.toList());
+
+        //ahora que lo tenemos los enviamos  a la vista con Model
+        /*Como funciona
+        * primero sabemos que cuando se inicia el sistema recarga los productos
+        * porque recibe por get nada quiere decir que es la raiz
+        * ahora sabiendo eso
+        * lo que hacemos es que utilizamos el modelo que se ocupo en mostrar desde raiz
+        * pero como es una busqueda y la que estaria mandando la peticion es buscar
+        * se recargaria con los datos buscados en listaProductos */
+        modelo.addAttribute("listaProducto",listaProductos);
+        /*primero entramos a este metodo por medio del templateUsuarioAdmin que es
+        el que hace la peticion para entrar a este metodo buscar y ese trae un parametro
+        que es nombre que trae el datos a buscar
+        una ves encontrado los almacenamos en una lista esa lista tre todo los datos del
+        producto y como hacemos para mostrarlos
+        tenemos que entrar a la home.html que es donde se estan mostrando los datos
+        y mandamos el modelo utilizando el mismo nombre que cunando se manda por raiz
+        asi si quiere entrar a la raiz vera todo los productos pero si solo quiere ver
+        unos exactos por medio del buscar veria esos siempre usando el mismo modelo
+         */
+        return "usuario/home";
     }
 }
