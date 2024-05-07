@@ -21,4 +21,9 @@ public class UsuarioImplement implements IUsuarioServicios{
     public Usuario guardar(Usuario u) {
         return usuarioRepositorio.save(u);
     }
+
+    @Override
+    public Optional<Usuario> findByEmail(String email) {
+        return usuarioRepositorio.findByEmail(email);
+    }
 }
