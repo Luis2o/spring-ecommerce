@@ -16,4 +16,9 @@ public class UsuarioImplement implements IUsuarioServicios{
     public Optional<Usuario> buscatId(Integer id) {
         return usuarioRepositorio.findById(id);
     }
+
+    @Override
+    public Usuario guardar(Usuario u) {
+        return usuarioRepositorio.save(u);
+    }
 }

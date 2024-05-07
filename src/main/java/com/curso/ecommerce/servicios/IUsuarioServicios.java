@@ -6,4 +6,5 @@ import java.util.Optional;
 
 public interface IUsuarioServicios {
     Optional<Usuario> buscatId(Integer id);
+    Usuario guardar(Usuario u);
 }
