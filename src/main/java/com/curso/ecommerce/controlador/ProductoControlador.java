@@ -3,8 +3,10 @@ package com.curso.ecommerce.controlador;
 import com.curso.ecommerce.modelo.Producto;
 
 import com.curso.ecommerce.modelo.Usuario;
+import com.curso.ecommerce.servicios.IUsuarioServicios;
 import com.curso.ecommerce.servicios.ProductoService;
 import com.curso.ecommerce.servicios.UploadFileService;
+import jakarta.servlet.http.HttpSession;
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,6 +28,9 @@ public class ProductoControlador {
     @Autowired
     private ProductoService productoService;
 
+    @Autowired
+    private IUsuarioServicios iUsuarioServicios;
+
     @GetMapping("")// se invoca cuando se hace una peticion vacia por url
     public String show(Model modelo) {
         modelo.addAttribute("prod", productoService.listaProductos());
@@ -38,9 +43,10 @@ public class ProductoControlador {
     }
 
     @PostMapping("/guardar")      //create.html esa variable img es del campo guardar img
-    public String guardar(Producto producto, @RequestParam("img") MultipartFile file, @RequestParam("nom") String n) {
+    public String guardar(HttpSession session, Producto producto, @RequestParam("img") MultipartFile file, @RequestParam("nom") String n) {
         LOGGER.info("Este es el objeto producto {}", producto);
-        Usuario usuario = new Usuario(1, "", "", "", "", "", "", "");
+
+        Usuario usuario = iUsuarioServicios.buscatId(Integer.parseInt(session.getAttribute("idusuario").toString())).get();
         producto.setUsuario(usuario);
 
         //img
@@ -72,8 +78,8 @@ public class ProductoControlador {
     }
 
     @PostMapping("/actualizar")
-    public String actualizar(Producto producto, @RequestParam("img") MultipartFile file) {
-        Usuario usuario = new Usuario(1, "", "", "", "", "", "", "");
+    public String actualizar(HttpSession session, Producto producto, @RequestParam("img") MultipartFile file) {
+        Usuario usuario= iUsuarioServicios.buscatId(Integer.parseInt(session.getAttribute("idusuario").toString())).get();
         producto.setUsuario(usuario);
         LOGGER.info("que datos lleva el actualizar {}", producto);
         if (file.isEmpty()) {//editamos el producto pero no cambiamos la img

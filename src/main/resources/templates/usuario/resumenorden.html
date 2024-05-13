@@ -38,9 +38,9 @@
                         <h5 class="card-title">
                             DATOS ORDEN
                         </h5>
-                        <h6 th:text="${enviarUsuario.nombre}">Nombre: </h6>
-                        <h6 th:text="${enviarUsuario.email}">Correo: </h6>
-                        <h6 th:text="${enviarUsuario.direccion}">Dirección</h6>
+                        <h6 th:text="'Nombre: '+ ${enviarUsuario.nombre}"></h6>
+                        <h6 th:text="'Email: '+${enviarUsuario.email}"></h6>
+                        <h6 th:text="'Direccion: '+${enviarUsuario.direccion}"></h6>
 
                         <h5 class="card-title">
                             PRODUCTOS

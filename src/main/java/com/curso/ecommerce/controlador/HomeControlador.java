@@ -8,6 +8,7 @@ import com.curso.ecommerce.servicios.IDetalleOrdenServicio;
 import com.curso.ecommerce.servicios.IOrdenServicio;
 import com.curso.ecommerce.servicios.IUsuarioServicios;
 import com.curso.ecommerce.servicios.ProductoService;
+import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;//para que funcione logger
 import org.slf4j.LoggerFactory;//para que funcione logger
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +38,17 @@ public class HomeControlador {
     @Autowired
     private IDetalleOrdenServicio iDetalleOrdenServicio;
 
+    //la raiz del proyecto
     @GetMapping("")
-    public String home(Model modelo) {
+    public String home(Model modelo, HttpSession session) {
+        /*por medio de HttpSession y usando el mismo nombre session puedo acceder a la
+        * sesion del usuario que guarde desde UsuarioControlador
+        *
+        * por medio del log quiero ver id trae y para eso
+        * uso el mismo nombre session y por medio de getAtribute
+        * puedo acceder al atributo que defini en el otro metodo
+        * que es idUsuario*/
+        log.info("Sesion del usuario: {}",session.getAttribute("idusuario"));
         modelo.addAttribute("listaProducto", productoService.listaProductos());
         return "usuario/home";
     }
@@ -122,8 +132,8 @@ public class HomeControlador {
     }
 
     @GetMapping("/resumenOrden")
-    public String resumenOrden(Model modelo) {
-        Usuario usuario = usuarioServicios.buscatId(1).get();
+    public String resumenOrden(Model modelo, HttpSession session) {
+        Usuario usuario = usuarioServicios.buscatId(Integer.parseInt(session.getAttribute("idusuario").toString())).get();
         modelo.addAttribute("CarritoResumen", detalles);
         //con esto puedo mostrar el total de la compra
         modelo.addAttribute("mostrarResumenTotal", orden);//solo mando a llamar mostrarTotal
@@ -133,11 +143,11 @@ public class HomeControlador {
 
     //guarda el detalle de la  orden
     @GetMapping("/guardarOrden")
-    public String guardarOrden() {
+    public String guardarOrden(HttpSession session) {
         Date fechaCreacion = new Date();
         orden.setFechaCreacion(fechaCreacion);
         orden.setNumero(ordenServicio.numeroOrden());
-        Usuario usuario = usuarioServicios.buscatId(1).get();
+        Usuario usuario = usuarioServicios.buscatId(Integer.parseInt(session.getAttribute("idusuario").toString())).get();
         orden.setUsuario(usuario);
         ordenServicio.guardar(orden);
 

@@ -2,6 +2,7 @@ package com.curso.ecommerce.controlador;
 
 import com.curso.ecommerce.modelo.Usuario;
 import com.curso.ecommerce.servicios.IUsuarioServicios;
+import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,10 +42,21 @@ public class UsuarioControlador {
     }
 
     @PostMapping("/iniciarSesion")
-    public String iniciarSesion(Usuario u){
+    public String iniciarSesion(Usuario u, HttpSession session){
         log.info("datos de inicio de sesion: {}",u);
         Optional<Usuario> user = iUsuarioServicios.findByEmail(u.getEmail());
         log.info("Usuario obtenido por el email: {}",user.get());
+        if(user.isPresent()){//verificamos si el usuario esta presente en el optiona
+            //asi podre tener el id global
+            session.setAttribute("idusuario",user.get().getIdUsuario());
+            if(user.get().getTipo().equals("ADMIN")){
+                return "redirect:/administrador";
+            }else{
+                return "redirect:/";
+            }
+        }else{
+            log.info("Usuario no existe");
+        }
         return "redirect:/";//nos redireccionamos a la home
     }
 }
