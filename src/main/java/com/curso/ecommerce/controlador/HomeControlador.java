@@ -38,7 +38,7 @@ public class HomeControlador {
     @Autowired
     private IDetalleOrdenServicio iDetalleOrdenServicio;
 
-    //la raiz del proyecto
+    //la raiz del proyecto home
     @GetMapping("")
     public String home(Model modelo, HttpSession session) {
         /*por medio de HttpSession y usando el mismo nombre session puedo acceder a la
@@ -50,6 +50,9 @@ public class HomeControlador {
         * que es idUsuario*/
         log.info("Sesion del usuario: {}",session.getAttribute("idusuario"));
         modelo.addAttribute("listaProducto", productoService.listaProductos());
+
+        //enviamos el id del usuario
+        modelo.addAttribute("sesion",session.getAttribute("idusuario"));
         return "usuario/home";
     }
 
@@ -124,10 +127,11 @@ public class HomeControlador {
     }
 
     @GetMapping("/irAlCarrito")
-    public String irCarrito(Model modelo) {
+    public String irCarrito(Model modelo, HttpSession session) {
         modelo.addAttribute("Carrito", detalles);
         //con esto puedo mostrar el total de la compra
         modelo.addAttribute("mostrarTotal", orden);//solo mando a llamar mostrarTotal
+        modelo.addAttribute("sesion",session.getAttribute("idusuario"));
         return "usuario/carrito";
     }
 
@@ -194,4 +198,6 @@ public class HomeControlador {
          */
         return "usuario/home";
     }
+
+
 }

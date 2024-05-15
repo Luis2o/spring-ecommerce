@@ -29,8 +29,7 @@ public class UsuarioControlador {
     @PostMapping("/guardar")
     public String guardar(Usuario u) {
         log.info("Usuario registro: {}",u);
-        //tipos de usuarios
-        u.setTipo("Usuario");
+        u.setTipo("Usuario");//nivel de acceso como usuario
         iUsuarioServicios.guardar(u);
         return "redirect:/";//redireccionamos a la raiz osea a la home que en realidad es index
     }

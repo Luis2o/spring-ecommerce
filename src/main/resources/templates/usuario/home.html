@@ -12,9 +12,9 @@
     <link th:href="@{/css/heroic-features.css}" rel="stylesheet">
 </head>
 <body>
-<!-- Navigation -->
-<div th:include="/usuario/templateUsuarioAdmin.html::header"></div>
-
+<!-- Navigation validamos dependiendo el usuario entrar a admin o user -->
+<div th:include="/usuario/templateUsuarioAdmin.html::header" th:if="${sesion==null}"></div>
+<div th:include="/usuario/templateUsuarioAdmin.html::header_user" th:unless="sesion==null"></div>
 <!-- Page Content -->
 <div class="container">
 
